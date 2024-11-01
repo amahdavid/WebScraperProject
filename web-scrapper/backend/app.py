@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS # type: ignore
 from bs4 import BeautifulSoup
 import requests
 
 app = Flask(__name__)
+CORS(app)
 
-# endpoint for scraping, put in a try catch later
+# endpoint for scraping
 @app.route('/scrape', methods=['POST'])
 def scrape():
     data = request.get_json()
@@ -16,7 +18,7 @@ def scrape():
     
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raises HTTPError for bad responses (4xx, 5xx)
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         content = soup.get_text()
         return jsonify({'content': content}), 200
@@ -25,7 +27,7 @@ def scrape():
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
-# endpoint to generate questions, put in a try catch later
+# endpoint to generate questions
 @app.route('/questions', methods=['POST'])
 def questions():
     data = request.get_json()
@@ -43,7 +45,7 @@ def questions():
         return jsonify({'error': f'An error occurred while generating questions: {str(e)}'}), 500
 
 
-# endpoint to classy users
+# endpoint to classify users
 @app.route('/classify_user', methods=['POST'])
 def classify_user():
     data = request.get_json()
