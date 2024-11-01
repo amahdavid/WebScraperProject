@@ -1,17 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import URLInputPage from './pages/URLInputPage';
-import QuestionPage from './pages/QuestionPage';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import URLInputPage from "./pages/URLInputPage";
+import QuestionPage from "./pages/QuestionPage";
 
 function App() {
-    return (
-        <Router>
-            <Switch>
-                <Route path="/" exact component={URLInputPage}/>
-                <Route path="/questions" exact component={QuestionPage}/>
-            </Switch>
-        </Router>
-    )
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<URLInputPage />} />
+        <Route path="/questions" element={<QuestionPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
