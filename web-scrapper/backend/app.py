@@ -8,33 +8,57 @@ app = Flask(__name__)
 @app.route('/scrape', methods=['POST'])
 def scrape():
     data = request.get_json()
-    url = data.get('url')
+    
+    # Check if 'url' is provided in the request data
+    url = data.get('url') if data else None
     if not url:
         return jsonify({'error': 'URL is required'}), 400
     
     try:
         response = requests.get(url)
+        response.raise_for_status()  # Raises HTTPError for bad responses (4xx, 5xx)
         soup = BeautifulSoup(response.text, 'html.parser')
         content = soup.get_text()
         return jsonify({'content': content}), 200
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Request error: {str(e)}'}), 500
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
 # endpoint to generate questions, put in a try catch later
 @app.route('/generate_questions', methods=['POST'])
 def generate_questions():
-    content = request.get_json().get('content')
-    # Figure out what to generate questions but will be using placeholders for now
-    questions = ["Are you interested in Games?", "Do you work in the Tech Industry?"]
-    return jsonify({'questions': questions}), 200
+    data = request.get_json()
+    
+    # Check if 'content' is provided in the request data
+    content = data.get('content') if data else None
+    if not content:
+        return jsonify({'error': 'Content is required to generate questions'}), 400
+    
+    try:
+        # Placeholder questions
+        questions = ["Are you interested in Games?", "Do you work in the Tech Industry?"]
+        return jsonify({'questions': questions}), 200
+    except Exception as e:
+        return jsonify({'error': f'An error occurred while generating questions: {str(e)}'}), 500
+
 
 # endpoint to classy users
 @app.route('/classify_user', methods=['POST'])
 def classify_user():
-    responses = request.get_json().get('responses')
-    # placeholders for classification
-    classification = "Interested in the Gaming industry"
-    return jsonify({'classification': classification}), 200
+    data = request.get_json()
+    
+    # Check if 'responses' are provided in the request data
+    responses = data.get('responses') if data else None
+    if not responses:
+        return jsonify({'error': 'Responses are required for classification'}), 400
+    
+    try:
+        # Placeholder classification, replace with real logic if needed
+        classification = "Interested in the Gaming industry"
+        return jsonify({'classification': classification}), 200
+    except Exception as e:
+        return jsonify({'error': f'An error occurred while classifying user: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
