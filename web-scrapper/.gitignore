@@ -5,6 +5,22 @@
 /.pnp
 .pnp.js
 
+# Python dependencies
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+*.egg-info/
+*.egg
+*.whl
+
+# Virtual environments
+venv/
+env/
+.venv/
+
 # testing
 /coverage
 
