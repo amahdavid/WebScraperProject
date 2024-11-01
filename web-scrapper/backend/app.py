@@ -26,8 +26,8 @@ def scrape():
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
 # endpoint to generate questions, put in a try catch later
-@app.route('/generate_questions', methods=['POST'])
-def generate_questions():
+@app.route('/questions', methods=['POST'])
+def questions():
     data = request.get_json()
     
     # Check if 'content' is provided in the request data
