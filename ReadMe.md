@@ -15,3 +15,6 @@ For this challenge, you will build a tool that takes a website URL as input, scr
 - **Text Analysis Module**: To analyze content and determine relevant categories
 - **Question Generator**: To create industry or interest based questions
 - **User Classification Module**: To classify users based on responses
+
+# Project Link
+- You can find more information on the project: https://bravecareer.notion.site/Mini-Challenge-Web-Scraper-for-Visitor-Classification-12966e26414d8047a44dc41fb4ad66d2
