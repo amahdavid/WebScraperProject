@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setUrl, fetchData } from "../store/userSlice";
+import { setUrl, fetchData, setResponses } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
 
 function URLInputPage() {
