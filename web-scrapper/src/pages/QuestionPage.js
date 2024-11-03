@@ -12,7 +12,10 @@ function QuestionPage() {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      if (!themes.length) return;
+      if (!themes || themes.length === 0) {
+        console.error("No themes available for generating questions.");
+        return;
+      }
       try {
         const response = await fetch("http://127.0.0.1:5000/questions", {
           method: "POST",

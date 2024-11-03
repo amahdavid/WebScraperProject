@@ -17,15 +17,12 @@ def extract_themes(content):
    if len(content) > 1000:
        content = content[:1000]  # Truncate to first 1000 characters
 
-
    # Use the Hugging Face summarization pipeline to extract themes
    summary = summarizer(content, max_length=50, min_length=25, do_sample=False)
    themes = summary[0]['summary_text'].strip()
   
    # Split the summary into themes
    return [theme.strip() for theme in themes.split(',')]
-
-
 
 
 def generate_questions(themes):
@@ -65,7 +62,7 @@ def scrape():
 @app.route('/questions', methods=['POST'])
 def questions():
    data = request.get_json()
-   themes = data.get('themes') if data else None
+   themes = data.get('content') if data else None
    if not themes:
        return jsonify({'error': 'Themes are required to generate questions'}), 400
    try:
