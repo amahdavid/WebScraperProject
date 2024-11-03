@@ -10,6 +10,7 @@ CORS(app)
 device = 0 if torch.cuda.is_available() else -1
 # Load the summarization model
 summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=device)
+classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
 
 
 def extract_themes(content):
@@ -75,28 +76,25 @@ def questions():
 # Endpoint to classify users based on responses and topics
 @app.route('/classify_user', methods=['POST'])
 def classify_user():
-   data = request.get_json()
-  
-   # Check if 'responses' are provided in the request data
-   responses = data.get('responses') if data else None
-   if not responses:
-       return jsonify({'error': 'Responses are required for classification'}), 400
+    data = request.get_json()
+    responses = data.get('responses') if data else None
 
-
-   try:
-       # Prepare the prompt for classification
-       prompt = f"Based on the following responses from a user, classify their interests: {responses}. Please provide a detailed classification."
-      
-       # Here we could also use a different model for classification if desired
-       classifier = pipeline("zero-shot-classification")  # Example classification model
-       classification = classifier(prompt, candidate_labels=["technology", "health", "sports", "entertainment", "finance"])
-      
-       return jsonify({'classification': classification}), 200
-   except Exception as e:
-       return jsonify({'error': f'An error occurred while classifying user: {str(e)}'}), 500
+    if not responses:
+        return jsonify({'error': 'Responses are required for classification'}), 400
+    try:
+        prompt = f"Based on the following responses from a user, classify their interests: {responses}. Please provide a detailed classification."
+        # Here we could also use a different model for classification if desired
+        classification = classifier(prompt, candidate_labels=["technology", "health", "sports", "entertainment", "finance"])
+        # Extract the classification results you want to send back
+        result = {
+            'labels': classification['labels'],
+            'scores': classification['scores'],
+            'sequence': classification['sequence']
+        }
+        return jsonify({'classification': result}), 200
+    except Exception as e:
+        return jsonify({'error': f'An error occurred while classifying user: {str(e)}'}), 500
 
 
 if __name__ == '__main__':
    app.run(debug=True)
-
-

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { /* useDispatch ,*/ useSelector } from "react-redux";
-// import { setResponses } from "../store/userSlice";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function ClassificationPage() {
-  const [classification, setClassification] = useState("");
+  const [classification, setClassification] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const responses = useSelector((state) => state.user.responses);
@@ -51,7 +50,17 @@ function ClassificationPage() {
       ) : errorMessage ? (
         <p style={{ color: 'red' }}>{errorMessage}</p>
       ) : (
-        <p>Your classification: {classification}</p>
+        <div>
+          <h2>Your classification results:</h2>
+          <ul>
+            {classification.labels.map((label, index) => (
+              <li key={index}>
+                {label}: {classification.scores[index].toFixed(2)}
+              </li>
+            ))}
+          </ul>
+          <p>Input Sequence: {classification.sequence}</p>
+        </div>
       )}
       <button onClick={() => navigate("/questions")}>Back to Questions</button>
       <button onClick={() => navigate("/")}>Enter a new Link!</button>
