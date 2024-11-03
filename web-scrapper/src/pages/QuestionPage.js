@@ -53,7 +53,7 @@ function QuestionPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ responses }),
+        body: JSON.stringify({ responses, questions }),
       });
 
       const data = await response.json();

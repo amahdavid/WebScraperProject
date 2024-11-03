@@ -1,21 +1,37 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # type: ignore
-import requests
-import openai
-import os
+import openai, os, re, requests
 
 app = Flask(__name__)
 CORS(app)
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def extract_themes(content):
-    if len(content) > 1000:
-        content = content[:1000]
-    return content.split()
+    # Extract title
+    title_match = re.search(r'<title>(.*?)</title>', content)
+    title = title_match.group(1) if title_match else "No title found"
+
+    # Extract headings (h1, h2, h3)
+    headings = re.findall(r'<h[1-3]>(.*?)</h[1-3]>', content)
+    headings = [h.strip() for h in headings]
+
+    # Extract meta description
+    meta_match = re.search(r'<meta name="description" content="(.*?)"', content)
+    description = meta_match.group(1) if meta_match else "No description found"
+
+    # Extract paragraph content
+    paragraphs = re.findall(r'<p>(.*?)</p>', content)
+    paragraphs = [p.strip() for p in paragraphs]
+
+    # Combine extracted content into a meaningful format
+    themes = [title] + headings + [description] + paragraphs
+    return [theme for theme in themes if theme]
+
 
 def generate_questions(themes):
-    questions = [f"Are you interested in {theme.strip()}?" for theme in themes[:5]]
+    questions = [f"Are you interested in {theme.strip()}?" for theme in themes[:3]]
     return questions
+
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
@@ -36,6 +52,7 @@ def scrape():
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'Request error: {str(e)}'}), 500
 
+
 @app.route('/questions', methods=['POST'])
 def questions():
     data = request.get_json()
@@ -48,26 +65,31 @@ def questions():
     except Exception as e:
         return jsonify({'error': f'An error occurred while generating questions: {str(e)}'}), 500
 
+
 @app.route('/classify_user', methods=['POST'])
 def classify_user():
     data = request.get_json()
-    responses = data.get('responses') if data else None
+    responses = data.get('responses')
+    questions = data.get('questions')
 
-    if not responses:
-        return jsonify({'error': 'Responses are required for classification'}), 400
+    if responses is None or questions is None:
+        return jsonify({'error': 'Responses and Questions are required for classification'}), 400
+
     try:
-        # Use OpenAI to classify user interests based on responses
-        prompt = f"Based on the following responses: {responses}, classify the user's interests and provide a detailed message."
+        combined_responses = "\n".join(f"{q}: {r}" for q, r in zip(questions, responses))
+        prompt = f"Based on the following answers to the questions:\n{combined_responses}, classify the user's interests and provide a detailed message."
+        
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "user", "content": prompt}
             ]
         )
-        classification_message = completion['choices'][0]['message']['content']
+        classification_message = completion.choices[0].message['content']
         return jsonify({'classification': classification_message}), 200
     except Exception as e:
         return jsonify({'error': f'An error occurred while classifying user: {str(e)}'}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
