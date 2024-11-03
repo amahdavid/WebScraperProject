@@ -1,10 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+// Adjust fetchData to call the scrape endpoint
 export const fetchData = createAsyncThunk('user/fetchData', async (url) => {
-    const response = await fetch(url);
+    const response = await fetch('http://127.0.0.1:5000/scrape', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+    });
+    
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
+    
     const data = await response.json();
     return data;
 });

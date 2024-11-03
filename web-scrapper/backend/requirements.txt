@@ -1,0 +1,11 @@
+Flask
+Flask-Cors
+transformers
+requests
+torch
+transformers
+requests
+torch
+torchvision
+torchaudio
+python-env

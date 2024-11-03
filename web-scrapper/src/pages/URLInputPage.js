@@ -12,18 +12,25 @@ function URLInputPage() {
     setInputUrl(event.target.value);
 };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    dispatch(setUrl(inputUrl));
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  dispatch(setUrl(inputUrl));
 
-    try {
+  try {
       const fetchPromise = dispatch(fetchData(inputUrl));
-      await fetchPromise;
-      navigate("/questions");
-    } catch (error) {
+      const resultAction = await fetchPromise;
+      
+      if (fetchData.fulfilled.match(resultAction)) {
+          const themes = resultAction.payload.themes;
+          dispatch(setResponses(themes));
+          navigate("/questions");
+      } else {
+          throw new Error(resultAction.error.message);
+      }
+  } catch (error) {
       console.error("Error scraping: ", error);
-    }
-  };
+  }
+};
 
   return (
     <div>
