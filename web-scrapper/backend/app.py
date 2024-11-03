@@ -7,7 +7,6 @@ import torch # type: ignore
 app = Flask(__name__)
 CORS(app)
 
-
 device = 0 if torch.cuda.is_available() else -1
 # Load the summarization model
 summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=device)

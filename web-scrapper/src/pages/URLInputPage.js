@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setUrl, fetchData, setResponses } from "../store/userSlice";
+import { setUrl, fetchData, setThemes } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
 
 function URLInputPage() {
@@ -22,7 +22,7 @@ const handleSubmit = async (e) => {
       
       if (fetchData.fulfilled.match(resultAction)) {
           const themes = resultAction.payload.themes;
-          dispatch(setResponses(themes));
+          dispatch(setThemes(themes));
           navigate("/questions");
       } else {
           throw new Error(resultAction.error.message);

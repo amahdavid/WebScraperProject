@@ -8,24 +8,23 @@ function QuestionPage() {
   const [responses, setResponsesState] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const url = useSelector((state) => state.user.url);
+  const themes = useSelector((state) => state.user.themes);
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      if (!url) return; // Check if URL is defined
+      if (!themes.length) return;
       try {
         const response = await fetch("http://127.0.0.1:5000/questions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ content: url }), // i will replace with actual scraped data later
+          body: JSON.stringify({ content: themes }),
         });
 
         const data = await response.json();
         if (response.ok) {
           setQuestions(data.questions);
-          // Initialize responses based on the number of questions
           setResponsesState(Array(data.questions.length).fill(""));
         } else {
           console.error("Error generating questions: ", data.error);
@@ -35,7 +34,7 @@ function QuestionPage() {
       }
     };
     fetchQuestions();
-  }, [url]);
+  }, [themes]);
 
   const handleAnswerChange = (index, answer) => {
     const newResponses = [...responses];
