@@ -22,7 +22,7 @@ function QuestionPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ content: themes }),
+          body: JSON.stringify({ themes: themes }),
         });
 
         const data = await response.json();
