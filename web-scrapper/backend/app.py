@@ -8,32 +8,26 @@ app = Flask(__name__)
 CORS(app)
 
 device = 0 if torch.cuda.is_available() else -1
-# Load the summarization model
 summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=device)
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
 
 
 def extract_themes(content):
-   # Truncate content to the first 1000 characters (or use another strategy)
    if len(content) > 1000:
-       content = content[:1000]  # Truncate to first 1000 characters
+       content = content[:1000]
 
-   # Use the Hugging Face summarization pipeline to extract themes
    summary = summarizer(content, max_length=50, min_length=25, do_sample=False)
    themes = summary[0]['summary_text'].strip()
-  
-   # Split the summary into themes
    return [theme.strip() for theme in themes.split(',')]
 
 
 def generate_questions(themes):
    questions = []
-   for theme in themes[:5]:  # Limit to 5 questions
+   for theme in themes[:5]:
        questions.append(f"Are you interested in {theme.strip()}?")
    return questions
 
 
-# Endpoint for scraping
 @app.route('/scrape', methods=['POST'])
 def scrape():
    data = request.get_json()
@@ -45,21 +39,17 @@ def scrape():
        response.raise_for_status()
        content = response.text
 
-
-       # Ensure the content is not empty
        if not content:
            return jsonify({'error': 'No content found at the provided URL'}), 400
 
-
        themes = extract_themes(content)
-       return jsonify({'themes': themes}), 200  # Return extracted themes for further processing
+       return jsonify({'themes': themes}), 200
    except requests.exceptions.RequestException as e:
        return jsonify({'error': f'Request error: {str(e)}'}), 500
    except Exception as e:
        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 
-# Endpoint to generate questions based on content
 @app.route('/questions', methods=['POST'])
 def questions():
    data = request.get_json()
@@ -73,7 +63,6 @@ def questions():
        return jsonify({'error': f'An error occurred while generating questions: {str(e)}'}), 500
 
 
-# Endpoint to classify users based on responses and topics
 @app.route('/classify_user', methods=['POST'])
 def classify_user():
     data = request.get_json()
@@ -83,9 +72,7 @@ def classify_user():
         return jsonify({'error': 'Responses are required for classification'}), 400
     try:
         prompt = f"Based on the following responses from a user, classify their interests: {responses}. Please provide a detailed classification."
-        # Here we could also use a different model for classification if desired
         classification = classifier(prompt, candidate_labels=["technology", "health", "sports", "entertainment", "finance"])
-        # Extract the classification results you want to send back
         result = {
             'labels': classification['labels'],
             'scores': classification['scores'],
