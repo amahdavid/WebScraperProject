@@ -26,3 +26,9 @@ For this challenge, you will build a tool that takes a website URL as input, scr
 - python3 -m venv venv
 - source venv/bin/activate
 - pip install -r requirements.txt
+
+# Project Start
+- cd web-scrapper/backend
+- python app.py
+- cd web-scrapper (In another terminal)
+- npm start
