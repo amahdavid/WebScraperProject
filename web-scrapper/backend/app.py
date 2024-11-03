@@ -7,23 +7,18 @@ CORS(app)
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def extract_themes(content):
-    # Extract title
     title_match = re.search(r'<title>(.*?)</title>', content)
     title = title_match.group(1) if title_match else "No title found"
 
-    # Extract headings (h1, h2, h3)
     headings = re.findall(r'<h[1-3]>(.*?)</h[1-3]>', content)
     headings = [h.strip() for h in headings]
 
-    # Extract meta description
     meta_match = re.search(r'<meta name="description" content="(.*?)"', content)
     description = meta_match.group(1) if meta_match else "No description found"
 
-    # Extract paragraph content
     paragraphs = re.findall(r'<p>(.*?)</p>', content)
     paragraphs = [p.strip() for p in paragraphs]
 
-    # Combine extracted content into a meaningful format
     themes = [title] + headings + [description] + paragraphs
     return [theme for theme in themes if theme]
 
