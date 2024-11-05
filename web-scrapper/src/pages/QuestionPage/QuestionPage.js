@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setResponses } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
+import styles from "./QuestionPage.module.css";
 
 function QuestionPage() {
   const [questions, setQuestions] = useState([]);
@@ -70,13 +71,13 @@ function QuestionPage() {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Questions</h1>
       {questions.length > 0 ? (
         questions.map((question, index) => (
-          <div key={index}>
-            <p>{question}</p>
-            <label>
+          <div key={index} className={styles.questionBlock}>
+            <p className={styles.questionText}>{question}</p>
+            <label className={styles.label}>
               <input
                 type="radio"
                 name={`question${index}`}
@@ -85,7 +86,7 @@ function QuestionPage() {
               />
               Yes
             </label>
-            <label>
+            <label className={styles.label}>
               <input
                 type="radio"
                 name={`question${index}`}
@@ -94,7 +95,7 @@ function QuestionPage() {
               />
               No
             </label>
-            <label>
+            <label className={styles.label}>
               <input
                 type="radio"
                 name={`question${index}`}
@@ -108,7 +109,9 @@ function QuestionPage() {
       ) : (
         <p>Loading questions...</p>
       )}
-      <button onClick={handleSubmit}>Submit Answers</button>
+      <button onClick={handleSubmit} className={styles.submitButton}>
+        Submit Answers
+      </button>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import styles from "./ClassificationPage.module.css";
 
 function ClassificationPage() {
   const location = useLocation();
@@ -7,12 +8,12 @@ function ClassificationPage() {
   const classification = location.state?.classification || null;
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>User Classification</h1>
       {classification ? (
         <div>
           <h2>Your classification results:</h2>
-          <p>{classification}</p>
+          <p className={styles.classificationText}>{classification}</p>
         </div>
       ) : (
         <p>No classification data available.</p>

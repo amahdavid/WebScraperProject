@@ -2,38 +2,39 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUrl, fetchData, setThemes } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
+import styles from "./URLInputPage.module.css";
 
 function URLInputPage() {
-  const [inputUrl, setInputUrl] = useState('');
+  const [inputUrl, setInputUrl] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
     setInputUrl(event.target.value);
-};
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  dispatch(setUrl(inputUrl));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(setUrl(inputUrl));
 
-  try {
+    try {
       const fetchPromise = dispatch(fetchData(inputUrl));
       const resultAction = await fetchPromise;
-      
+
       if (fetchData.fulfilled.match(resultAction)) {
-          const themes = resultAction.payload.themes;
-          dispatch(setThemes(themes));
-          navigate("/questions");
+        const themes = resultAction.payload.themes;
+        dispatch(setThemes(themes));
+        navigate("/questions");
       } else {
-          throw new Error(resultAction.error.message);
+        throw new Error(resultAction.error.message);
       }
-  } catch (error) {
+    } catch (error) {
       console.error("Error scraping: ", error);
-  }
-};
+    }
+  };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Enter Website URL</h1>
       <form onSubmit={handleSubmit}>
         <input
