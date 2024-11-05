@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setResponses } from "../store/userSlice";
+import { setResponses } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
 
 function QuestionPage() {
