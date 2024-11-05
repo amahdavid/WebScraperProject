@@ -35,6 +35,9 @@ function URLInputPage() {
 
   return (
     <div className={styles.container}>
+      <p className={styles.welcomeText}>
+        Welcome! Enter a URL, and we'll generate what we think are your interests.
+      </p>
       <h1>Enter Website URL</h1>
       <form onSubmit={handleSubmit}>
         <input

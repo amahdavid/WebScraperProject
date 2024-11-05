@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import URLInputPage from "./pages/URLInputPage/URLInputPage";
 import QuestionPage from "./pages/QuestionPage/QuestionPage";
 import ClassificationPage from "./pages/ClassificationPage/ClassificationPage";
+import './styles/global.css';
+
 
 function App() {
   return (
