@@ -73,14 +73,16 @@ def classify_user():
     try:
         combined_responses = "\n".join(f"{q}: {r}" for q, r in zip(questions, responses))
         prompt = f"Based on the following answers to the questions:\n{combined_responses}, classify the user's interests and provide a detailed message."
-        
-        completion = openai.ChatCompletion.create(
+
+        # Update to the new API syntax
+        completion = openai.completions.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            prompt=prompt,
+            max_tokens=150
         )
-        classification_message = completion.choices[0].message['content']
+
+        # Extract the classification message
+        classification_message = completion['choices'][0]['text'].strip()
         return jsonify({'classification': classification_message}), 200
     except Exception as e:
         return jsonify({'error': f'An error occurred while classifying user: {str(e)}'}), 500
