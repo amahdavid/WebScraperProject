@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./ClassificationPage.module.css";
 
-function ClassificationPage() {
+const ClassificationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const classification = location.state?.classification || null;

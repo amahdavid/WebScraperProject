@@ -4,7 +4,7 @@ import { setUrl, fetchData, setThemes } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import styles from "./URLInputPage.module.css";
 
-function URLInputPage() {
+const URLInputPage = () => {
   const [inputUrl, setInputUrl] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();

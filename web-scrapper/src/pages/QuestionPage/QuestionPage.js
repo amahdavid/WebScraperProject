@@ -4,7 +4,7 @@ import { setResponses } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionPage.module.css";
 
-function QuestionPage() {
+const QuestionPage = () => {
   const [questions, setQuestions] = useState([]);
   const [responses, setResponsesState] = useState([]);
   const dispatch = useDispatch();

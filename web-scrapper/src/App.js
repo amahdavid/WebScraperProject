@@ -6,7 +6,7 @@ import ClassificationPage from "./pages/ClassificationPage/ClassificationPage";
 import './styles/global.css';
 
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
