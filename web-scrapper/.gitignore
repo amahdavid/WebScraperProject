@@ -21,6 +21,7 @@ venv/
 env/
 .venv/
 .env
+backend.zip
 
 # testing
 /coverage
