@@ -18,7 +18,7 @@ const QuestionPage = () => {
         return;
       }
       try {
-        const response = await fetch("http://127.0.0.1:5000/questions", {
+        const response = await fetch("https://webscraperserver.onrender.com/questions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const QuestionPage = () => {
   const handleSubmit = async () => {
     try {
       dispatch(setResponses(responses));
-      const response = await fetch("http://127.0.0.1:5000/classify_user", {
+      const response = await fetch("https://webscraperserver.onrender.com/classify_user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
