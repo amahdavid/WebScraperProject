@@ -4,7 +4,7 @@ import openai, os, re, requests
 from openai import OpenAI
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="https://web-scraper-app.netlify.app")
 
 client = OpenAI(
   api_key=os.environ['OPENAI_API_KEY'],  # this is also the default, it can be omitted
