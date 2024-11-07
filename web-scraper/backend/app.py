@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # type: ignore
 import openai, os, re, requests
+from openai import OpenAI
 
 app = Flask(__name__)
 CORS(app)
-openai.api_key = os.getenv('OPENAI_API_KEY')
+
+client = OpenAI(
+  api_key=os.environ['OPENAI_API_KEY'],  # this is also the default, it can be omitted
+)
 
 def extract_themes(content):
     title_match = re.search(r'<title>(.*?)</title>', content)
@@ -71,18 +75,22 @@ def classify_user():
         return jsonify({'error': 'Responses and Questions are required for classification'}), 400
 
     try:
+        # Combine responses with questions
         combined_responses = "\n".join(f"{q}: {r}" for q, r in zip(questions, responses))
         prompt = f"Based on the following answers to the questions:\n{combined_responses}, classify the user's interests and provide a detailed message."
-
-        # Update to the new API syntax
-        completion = openai.completions.create(
+        
+        # Use the ChatCompletion API correctly
+        completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            prompt=prompt,
-            max_tokens=150
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
         )
-
-        # Extract the classification message
-        classification_message = completion['choices'][0]['text'].strip()
+        
+        # Extract the classification message from the API response
+        classification_message = completion.choices[0].message.content
+        
         return jsonify({'classification': classification_message}), 200
     except Exception as e:
         return jsonify({'error': f'An error occurred while classifying user: {str(e)}'}), 500
